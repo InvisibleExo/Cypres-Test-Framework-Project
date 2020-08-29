@@ -1,0 +1,16 @@
+{
+  "name": "cypress-test-framework-project",
+  "version": "1.0.0",
+  "description": "To create a test E2E framework using Cypress.",
+  "main": "index.js",
+  "scripts": {
+    "cy:open": "cypress open"
+  },
+  "author": "InvisibleExo",
+  "license": "ISC",
+  "devDependencies": {
+    "@cypress/webpack-preprocessor": "^5.4.4",
+    "chai": "^4.2.0",
+    "cypress": "^4.12.1"
+  }
+}
