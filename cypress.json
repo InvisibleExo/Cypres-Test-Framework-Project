@@ -4,7 +4,7 @@
     "baseUrl": "https://store.steampowered.com/",
     "video": false,
     "defaultCommandTimeout": 5000,
-    "pageLoadTimeout": 30000,
+    "pageLoadTimeout": 40000,
     "chromeWebSecurity": false 
     
 }

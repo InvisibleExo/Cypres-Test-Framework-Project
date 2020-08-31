@@ -68,11 +68,34 @@ class CyBasePage {
 
     getURL(){
         return this.cy.url();
+  
     }
 
     goToURL(target){
         this.cy.visit(target);
     }
+
+    request(target){
+        return this.cy.request(target);
+    }
+
+    wrap(subject, option){
+        if(option){
+            return this.cy.wrap(subject, option);
+        } else {
+            return this.cy.wrap(subject);
+        }
+    }
+
+    forceClick(givenValue){
+        givenValue.then(($ele) => {
+            this.cy.wrap($ele).click({force:true});
+        })
+    }
+
+    //retrivePromiseValue(promiseValue){
+   //     return this.cy.retrivePromiseValue(promiseValue);
+  // }
 
 }
 
