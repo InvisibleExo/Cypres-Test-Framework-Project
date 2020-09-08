@@ -70,7 +70,7 @@ describe('Function test for Steam Header', () => {
 
 
     //Test dropdown lists for header category
-    it.only('Hover and click on drop down list', () => {
+    it('Hover and click on drop down list for Store', () => {
         const steamHeader = new SteamGlobalHeader(cy);
         //Home
         steamHeader.pickSubCategory('STORE', 'Home').as('store-home');
@@ -83,14 +83,7 @@ describe('Function test for Steam Header', () => {
         expectValueToContain(steamHeader.getURL(), 'https://store.steampowered.com/login/');
 
         //WishList
-        steamHeader.pickSubCategory('STORE', 'Wishlist').then(($a) => {
-            const href = $a.prop('href');
-
-            steamHeader.request(href)
-            .its('body').should('include', 'Steam Community');
-
-        });
-
+        steamHeader.inspectRequestURL(steamHeader.pickSubCategory('STORE', 'Wishlist'), 'href', 'body', 'Steam Community');
 
         //Points Shop
         steamHeader.forceClick(steamHeader.pickSubCategory('STORE', 'Points Shop'));
@@ -105,7 +98,56 @@ describe('Function test for Steam Header', () => {
         expectValueToContain(steamHeader.getURL(), 'https://store.steampowered.com/stats/');
     });
 
+    it('Test Drop down list for header Community', () => {
+        const steamHeader = new SteamGlobalHeader(cy);
 
+        steamHeader.inspectRequestURL(steamHeader.pickSubCategory('COMMUNITY', 'Home'), 'href', 'body', 'Steam Community');
+
+        steamHeader.inspectRequestURL(steamHeader.pickSubCategory('COMMUNITY', 'Discussions'), 'href', 'body', 'Steam Community :: Discussions');
+
+        steamHeader.inspectRequestURL(steamHeader.pickSubCategory('COMMUNITY', 'Workshop'), 'href', 'body', 'Steam Community :: Steam Workshop');
+
+        steamHeader.inspectRequestURL(steamHeader.pickSubCategory('COMMUNITY', 'Market'), 'href', 'body', 'Steam Community :: Steam Community Market');
+
+        steamHeader.inspectRequestURL(steamHeader.pickSubCategory('COMMUNITY', 'Broadcasts'), 'href', 'body', 'Steam Community');
+    });
+
+    it('Test Install Steam Link', () => {
+        const steamHeader = new SteamGlobalHeader(cy);
+
+        steamHeader.getActionItem('a', 'Install Steam').click();
+
+        expectValueToContain(steamHeader.getURL(), 'https://store.steampowered.com/about/');
+    });
+
+    it('Test Login link', () => {
+        const steamHeader = new SteamGlobalHeader(cy);
+
+        steamHeader.getActionItem('a', 'login').click();
+
+        expectValueToContain(steamHeader.getURL(), 'https://store.steampowered.com/login/');
+    })
+
+    //Test list validation for languages
+    it.only('Test Lanuage list', () => {
+        const steamHeader = new SteamGlobalHeader(cy);
+
+        steamHeader.getActionItem('span', 'language').click();
+
+        steamHeader.getActionSection().get('#language_dropdown')
+            .within(() => {
+                const langList = '/^schinese|tchinese|japanese|koreana'+
+                '|thai|bulgarian|czech|danish|german|spanish|latam|greek'+
+                '|french|italian|hungarian|dutch|norwegian|polish|portuguese'+
+                '|brazilian|romanian|russian|finnish|swedish|turkish'+
+                '|vietnamese|http://translation.steampowered.com$/';
+                steamHeader.get('a[class="popup_menu_item tight"]').should('have.length', 28)
+                .each(($a) => {
+                    steamHeader.inspectRequestURL(steamHeader.get($a), 'href', 'body', langList);
+                });
+
+            });
+    })
 
 
 })

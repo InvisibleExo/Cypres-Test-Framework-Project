@@ -93,9 +93,13 @@ class CyBasePage {
         })
     }
 
-    //retrivePromiseValue(promiseValue){
-   //     return this.cy.retrivePromiseValue(promiseValue);
-  // }
+    inspectRequestURL(givenValue, propValue, requestSection, requestTarget){
+        givenValue.then(($a) => {
+            const prop = $a.prop(propValue);
+
+            this.cy.request(prop).its(requestSection).should('include', requestTarget);
+        })
+    }
 
 }
 
