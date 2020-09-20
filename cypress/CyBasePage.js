@@ -87,6 +87,10 @@ class CyBasePage {
         }
     }
 
+    getCy(){
+        return this.cy;
+    }
+
     forceClick(givenValue){
         givenValue.then(($ele) => {
             this.cy.wrap($ele).click({force:true});
