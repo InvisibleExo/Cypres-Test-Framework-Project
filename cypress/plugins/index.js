@@ -16,7 +16,6 @@
  * @type {Cypress.PluginConfig}
  */
 const axios = require('axios').default;
-const {expect} = require('chai');
  // use axios
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
@@ -33,10 +32,19 @@ module.exports = (on, config) => {
               return { answer: false, status: response.status };
             }
           })
-          .catch((error) => console.log(error));
-          
-          
+          .catch((error) => console.log(error));  
     },
+
+    getURLListBodyResponseContains: ({hrefList, target}) => {
+     return Promise.all(hrefList.map((href) => {
+        return checkIfRequestContains(href, target);
+      }))
+        .then((result) => {
+          return result;
+        })
+        .catch((error) => console.log(error));
+    },
+
     getURLStatusResponse: (href) => {
       return axios.get(href)
         .then((response) => {
@@ -45,5 +53,18 @@ module.exports = (on, config) => {
         .catch((error) => console.log(error));
     }
   })
+}
+
+function checkIfRequestContains(url, target){
+  return axios.get(url)
+  .then( (response) => {
+    //console.log('target: '+ target);
+    if (response.data.match(target)) {
+      return { answer: true, status: response.status };
+    } else {
+      return { answer: false, status: response.status };
+    }
+  })
+  .catch((error) => console.log(error)); 
 }
 

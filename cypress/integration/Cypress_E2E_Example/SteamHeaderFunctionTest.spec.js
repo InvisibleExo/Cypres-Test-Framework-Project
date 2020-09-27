@@ -129,7 +129,7 @@ describe('Function test for Steam Header', () => {
     })
 
     //Test list validation for languages
-    it.only('Test Lanuage list', () => {
+    it('Test Language list', () => {
         const steamHeader = new SteamGlobalHeader(cy);
 
         steamHeader.getActionItem('span', 'language').click();
@@ -139,13 +139,30 @@ describe('Function test for Steam Header', () => {
                 const langList = /^schinese|tchinese|japanese|koreana|thai|bulgarian|czech|danish|german|spanish|latam|greek|french|italian|hungarian|dutch|norwegian|polish|portuguese|brazilian|romanian|russian|finnish|swedish|turkish|vietnamese|Steam Translation Server/;
                 steamHeader.get('a[class="popup_menu_item tight"]').as('languageLinks');
                 steamHeader.get('@languageLinks').should('have.length', 28);
-                
+
+                //This using task on whole array.
+                let urlList = [];
                 steamHeader.get('@languageLinks').each(($a) => {
+                    urlList.push($a.prop('href'));
+                });
+                steamHeader.getCy().task('getURLListBodyResponseContains', {hrefList: urlList, target: langList}, {timeout: 100000}).as('returnValue');
+                steamHeader.get('@returnValue').then(($value) => {
+                    console.log($value);
+                    $value.forEach((val) => {
+                        console.log(val);
+                        steamHeader.getCy().wrap(val).its('status').should('eq', 200);
+                        steamHeader.getCy().wrap(val).its('answer').should('be.true');
+                    })
+                }); 
+
+
+                //This approach using each loop 
+               /* steamHeader.get('@languageLinks').each(($a) => {
                     steamHeader.getCy().task('getURLBodyResponseContains', {href: $a.prop('href'), target: langList}, {timeout: 100000}).as('returnValue');
                     steamHeader.get('@returnValue').its('status').should('equal', 200);
                     steamHeader.get('@returnValue').its('answer').should('be.true');
                     
-                });
+                }); */
             });
 
     })
